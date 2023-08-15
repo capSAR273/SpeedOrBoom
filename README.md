@@ -1,5 +1,8 @@
 # SpeedOrBoom
 
+![image](https://github.com/capSAR273/SpeedOrBoom/assets/5252505/8f60b2b6-e0b9-48c7-a7de-d9e3de34a72d)
+
+
 This is my first mod for The Long Drive, if you've ever seen the movie Speed this mod is basically that. Once your car reaches 60 km/h, if the bomb is active once you slow down under that amount your car will  explode. You might survive, I tried to tweak the explosion to not kill the player 100% of the time but it is possible.
 
 To activate the bomb:
