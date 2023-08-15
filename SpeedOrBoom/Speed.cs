@@ -13,7 +13,7 @@ namespace SpeedOrBoom
         public bool fastEnough;
         public bool activateBombFlag;
         public float radius = 50.0F;
-        public float power = 1000.0F;
+        public float power = 100.0F;
 
         public override string ID => "8723";
         public override string Name => "Speed or Boom";
@@ -22,60 +22,70 @@ namespace SpeedOrBoom
 
         public override void OnLoad()
         {
-            
+            Debug.Log("SOB: Mod Loaded");
             if (mainscript.M.load)
                 return;
         }
 
         public override void OnGUI()
         {
-            GUI.Label(new Rect(
-            100, 100, // offset from the top-left of the screen
-            1000, 700), // maximum pixel size of the box
-            string.Format("<color=black><size=25>Position: {0}</size></color>", // format string
-            mainscript.M.Car.speed)); // format arguments
-
-            GUI.Label(new Rect(
-            300, 100, // offset from the top-left of the screen
-            1000, 700), // maximum pixel size of the box
-            string.Format("<color=black><size=25>Position: {0}</size></color>", // format string
-            this.car.speed)); // format arguments
+            if ( mainscript.M.player.lastCar != null)
+            {
+                GUI.Label(new Rect(
+                100, 100, // offset from the top-left of the screen
+                1000, 700), // maximum pixel size of the box
+                string.Format("<color=red><size=25>Current Speed: {0}</size></color>", // format string
+                mainscript.M.player.lastCar.speed)); // format arguments
+            }
         }
 
         public override void Update()
         {
             try
             {
-                if (this.car.ignition)
+                if (mainscript.M.player.lastCar != null)
                 {
-                    if (this.car.speed > 40.00f)
+                    if ((int)mainscript.M.player.lastCar.speed > 40)
                     {
                         activateBombFlag = true;
-                        while (this.car.speed > 40.00f)
+                        Debug.Log("SOB: Bomb activated");
+                        while ((int)mainscript.M.player.lastCar.speed >= 40)
                         {
+                            //Debug.Log("SOB: Fast enough!"); - Disabling this for now as its super spammy
                             fastEnough = true;
                         }
-                        fastEnough = false;
+                        if((int)mainscript.M.player.lastCar.speed < 40)
+                        {
+                            fastEnough = false;
+                            Debug.Log("SOB: Not fast enough!!!");
+                        }
                         if (activateBombFlag && !fastEnough)
                         {
                             //Go Boom
-                            // Get the current position of the player
-                            Vector3 currentPlayerPosition = mainscript.M.player.transform.position;
-
-                            Collider[] colliders = Physics.OverlapSphere(currentPlayerPosition, radius);
-                            foreach (Collider hit in colliders)
-                            {
-                                Rigidbody rb = hit.GetComponent<Rigidbody>();
-
-                                if (rb != null)
-                                    rb.AddExplosionForce(power, currentPlayerPosition, radius, 3.0F);
-                            }
+                            Debug.Log("SOB: Calling explode()");
+                            explode();
                             activateBombFlag = false;
                         }
                     }
                 }
             }
             catch { }
+        }
+
+        public void explode()
+        {
+            // Get the current position of the player
+            Vector3 currentPlayerPosition = mainscript.M.player.Tb.transform.position;
+            Debug.Log("SOB: EXPLODE TIME");
+
+            Collider[] colliders = Physics.OverlapSphere(currentPlayerPosition, radius);
+            foreach (Collider hit in colliders)
+            {
+                Rigidbody rb = hit.GetComponent<Rigidbody>();
+
+                if (rb != null)
+                    rb.AddExplosionForce(power, currentPlayerPosition, radius, 3.0F);
+            }
         }
     }
 }
