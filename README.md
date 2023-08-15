@@ -11,3 +11,5 @@ The square will show red if the bomb is inactive, you can safely drive your car 
 
 DISCLAIMER: This mod isn't intended for a long playthrough, as you will inevitably piss in the car at some point and you might activate the bomb. Once it is active there is no way to disable it (currently).
 Best of luck out there!
+
+Big thanks to Kuri, Officiallym, and Jessica from The Long Drive Discord!
