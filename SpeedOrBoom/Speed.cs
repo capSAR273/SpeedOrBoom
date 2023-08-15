@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine.UI;
+using Unity.Injection;
 
 namespace SpeedOrBoom
 {
@@ -34,7 +35,7 @@ namespace SpeedOrBoom
         public override void OnGUI()
         {
             InitStyles();
-            #if DEBUG
+#if DEBUG
             if ( mainscript.M.player.lastCar != null)
             {
                 GUI.Label(new Rect(
@@ -63,18 +64,17 @@ namespace SpeedOrBoom
 #endif
             if (mainscript.M.player.lastCar != null)
             {
-                if(!bombReset)
+                if (!bombReset)
                 {
-                    GUI.Box(new Rect(25, 150, 25, 25), string.Format("<color=black><size=15>{0}</size></color>", // format string
-                        (int)mainscript.M.player.lastCar.speed), redStyle); 
+                    GUI.Box(new Rect(25, 150, 25, 25), string.Format("<color=black><size=15>{0}</size></color>", (int)mainscript.M.player.lastCar.speed), redStyle);
                 }
                 else if (bombReset && activateBombFlag)
                 {
                     GUI.Box(new Rect(25, 150, 25, 25), string.Format("<color=yellow><size=15>{0}</size></color>", (int)mainscript.M.player.lastCar.speed), blueStyle);
                 }
-                else if(bombReset)
-                {  
-                    GUI.Box(new Rect(25, 150, 25, 25), string.Format("<color=black><size=15>{0}</size></color>",(int)mainscript.M.player.lastCar.speed), greenStyle);
+                else if (bombReset)
+                {
+                    GUI.Box(new Rect(25, 150, 25, 25), string.Format("<color=black><size=15>{0}</size></color>", (int)mainscript.M.player.lastCar.speed), greenStyle);
                 }
             }
         }
@@ -85,10 +85,10 @@ namespace SpeedOrBoom
                 redStyle = new GUIStyle(GUI.skin.box);
                 redStyle.normal.background = MakeTex(2, 2, new Color(1f, 0f, 0f, 1f));
             }
-            if(greenStyle == null)
+            if (greenStyle == null)
             {
                 greenStyle = new GUIStyle(GUI.skin.box);
-                greenStyle.normal.background = MakeTex(2,2,new Color(0f, 1f, 0f, 1f));
+                greenStyle.normal.background = MakeTex(2, 2, new Color(0f, 1f, 0f, 1f));
             }
             if (blueStyle == null)
             {
@@ -134,7 +134,7 @@ namespace SpeedOrBoom
                         checkExplode();
                     }
                 }
-                
+
             }
             catch { }
         }
@@ -153,21 +153,21 @@ namespace SpeedOrBoom
         {
             // Get the current position of the player
             Vector3 currentPlayerPosition = mainscript.M.player.Tb.position;
-            
+
             Collider[] colliders = Physics.OverlapSphere(currentPlayerPosition, 150.0f);
 
             //Find all parts in the collision sphere
+            Rigidbody carBody = mainscript.M.player.lastCar.gameObject.GetComponent<Rigidbody>();
+            carBody.AddExplosionForce(25f, currentPlayerPosition, radius, 3.0F, ForceMode.VelocityChange);
             foreach (Collider hit in colliders)
             {
                 Rigidbody rb = hit.GetComponent<Rigidbody>();
                 if (rb != null)
-                {
+                { 
                     //Detatch parts from the car and apply the explosion force to them
                     partscript part = mainscript.M.player.lastCar.gameObject.GetComponentInChildren<partscript>();
                     part.FallOFf();
-                    //rb.AddExplosionForce(whimpPower, currentPlayerPosition, radius, 100.0F, ForceMode.Impulse);
-
-                    rb.AddExplosionForce(crazyPower, currentPlayerPosition, radius, 2.0F, ForceMode.VelocityChange);
+                    rb.AddExplosionForce(crazyPower, currentPlayerPosition, radius, 25.0F, ForceMode.Impulse);
                 }
             }
         }
