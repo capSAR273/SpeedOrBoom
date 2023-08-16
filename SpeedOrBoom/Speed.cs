@@ -11,9 +11,9 @@ namespace SpeedOrBoom
     public class SpeedOrBoom : Mod
     {
         public bool fastEnough;
-        public bool activateBombFlag;
-        public bool bombReset = false;
-        public float minSpeed = 100.0f;
+        public bool gamemodeActive;
+        public bool bombWatchingSpeed = false;
+        public float minSpeed = 80.0f;
         public float radius = 150.0F;
         public float whimpPower = 100.0F;
         private GUIStyle redStyle = null;
@@ -25,7 +25,7 @@ namespace SpeedOrBoom
         public override string ID => "8723";
         public override string Name => "Speed or Boom";
         public override string Author => "Fat Rat";
-        public override string Version => "0.3";
+        public override string Version => "0.4";
 
         public override void OnLoad()
         {
@@ -38,17 +38,12 @@ namespace SpeedOrBoom
 #if DEBUG
             if ( mainscript.M.player.lastCar != null)
             {
-                GUI.Label(new Rect(
-                100, 50, // offset from the top-left of the screen
-                1000, 700), // maximum pixel size of the box
-                string.Format("<color=red><size=25>Minimum Speed: {0}</size></color>", // format string
-                mainscript.M.player.lastCar.speed)); // format arguments
 
                 GUI.Label(new Rect(
                 100, 100, // offset from the top-left of the screen
                 1000, 700), // maximum pixel size of the box
-                string.Format("<color=red><size=35>Bomb Activated: {0}</size></color>", // format string
-                activateBombFlag)); // format arguments
+                string.Format("<color=red><size=35>Gamemode Active: {0}</size></color>", // format string
+                gamemodeActive)); // format arguments
 
                 GUI.Label(new Rect(
                 100, 150, // offset from the top-left of the screen
@@ -59,22 +54,22 @@ namespace SpeedOrBoom
                 GUI.Label(new Rect(
                 100, 200, // offset from the top-left of the screen
                 1000, 700), // maximum pixel size of the box
-                string.Format("<color=red><size=25>Bomb Reset: {0}</size></color>", // format string
-                bombReset)); // format arguments
+                string.Format("<color=red><size=25>Bomb Watching Speed: {0}</size></color>", // format string
+                bombWatchingSpeed)); // format arguments
 #endif
             if (mainscript.M.player.lastCar != null)
             {
-                if (!bombReset)
+                if (!bombWatchingSpeed)
                 {
-                    GUI.Box(new Rect(25, 150, 35, 25), string.Format("<color=black><size=15>{0}</size></color>", (int)mainscript.M.player.lastCar.speed), redStyle);
+                    GUI.Box(new Rect(25, 150, 25, 25), string.Format("<color=black><size=15>{0}</size></color>", (int)mainscript.M.player.lastCar.speed), redStyle);
                 }
-                else if (bombReset && activateBombFlag)
+                else if (bombWatchingSpeed && gamemodeActive)
                 {
-                    GUI.Box(new Rect(25, 150, 35, 25), string.Format("<color=yellow><size=15>{0}</size></color>", (int)mainscript.M.player.lastCar.speed), blueStyle);
+                    GUI.Box(new Rect(25, 150, 25, 25), string.Format("<color=yellow><size=15>{0}</size></color>", (int)mainscript.M.player.lastCar.speed), blueStyle);
                 }
-                else if (bombReset)
+                else if (bombWatchingSpeed)
                 {
-                    GUI.Box(new Rect(25, 150, 35, 25), string.Format("<color=black><size=15>{0}</size></color>", (int)mainscript.M.player.lastCar.speed), greenStyle);
+                    GUI.Box(new Rect(25, 150, 25, 25), string.Format("<color=black><size=15>{0}</size></color>", (int)mainscript.M.player.lastCar.speed), greenStyle);
                 }
             }
         }
@@ -117,20 +112,18 @@ namespace SpeedOrBoom
                 if (mainscript.M.player.lastCar != null)
                 {
                     //Pissing resets the bomb activation if you are somewhat standstill in the car
-                    if (mainscript.M.player.pissing && mainscript.M.player.lastCar.speed > 0 && mainscript.M.player.lastCar.speed < 5)
+                    if (mainscript.M.player.pissing && mainscript.M.player.lastCar.speed > 0 && mainscript.M.player.lastCar.speed < 10)
                     {
-                        bombReset = true;
+                        gamemodeActive = true;
                     }
                     //Player has met the min speed requirement for the bomb to be enabled and to be going fast enough
-                    if (mainscript.M.player.lastCar.speed > minSpeed)
+                    if (gamemodeActive && mainscript.M.player.lastCar.speed > minSpeed)
                     {
-                        activateBombFlag = true;
-                        fastEnough = true;
+                        bombWatchingSpeed = true;
                     }
                     //Car dipped under the minimum speed, might blow up
                     else if (mainscript.M.player.lastCar.speed < minSpeed - 1)
                     {
-                        fastEnough = false;
                         checkExplode();
                     }
                 }
@@ -140,12 +133,12 @@ namespace SpeedOrBoom
         }
         public void checkExplode()
         {
-            if (activateBombFlag && !fastEnough && bombReset)
+            if (gamemodeActive && mainscript.M.player.lastCar.speed < minSpeed - 1 && bombWatchingSpeed)
             {
                 //Go Boom
-                activateBombFlag = false;
                 explode();
-                bombReset = false;
+                gamemodeActive = false;
+                bombWatchingSpeed = false;
             }
         }
 
