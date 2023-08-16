@@ -25,7 +25,7 @@ namespace SpeedOrBoom
         public override string ID => "8723";
         public override string Name => "Speed or Boom";
         public override string Author => "Fat Rat";
-        public override string Version => "0.1";
+        public override string Version => "0.3";
 
         public override void OnLoad()
         {
