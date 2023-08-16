@@ -13,7 +13,7 @@ namespace SpeedOrBoom
         public bool fastEnough;
         public bool activateBombFlag;
         public bool bombReset = false;
-        public float minSpeed = 60.0f;
+        public float minSpeed = 100.0f;
         public float radius = 150.0F;
         public float whimpPower = 100.0F;
         private GUIStyle redStyle = null;
@@ -66,15 +66,15 @@ namespace SpeedOrBoom
             {
                 if (!bombReset)
                 {
-                    GUI.Box(new Rect(25, 150, 25, 25), string.Format("<color=black><size=15>{0}</size></color>", (int)mainscript.M.player.lastCar.speed), redStyle);
+                    GUI.Box(new Rect(25, 150, 30, 30), string.Format("<color=black><size=15>{0}</size></color>", (int)mainscript.M.player.lastCar.speed), redStyle);
                 }
                 else if (bombReset && activateBombFlag)
                 {
-                    GUI.Box(new Rect(25, 150, 25, 25), string.Format("<color=yellow><size=15>{0}</size></color>", (int)mainscript.M.player.lastCar.speed), blueStyle);
+                    GUI.Box(new Rect(25, 150, 30, 30), string.Format("<color=yellow><size=15>{0}</size></color>", (int)mainscript.M.player.lastCar.speed), blueStyle);
                 }
                 else if (bombReset)
                 {
-                    GUI.Box(new Rect(25, 150, 25, 25), string.Format("<color=black><size=15>{0}</size></color>", (int)mainscript.M.player.lastCar.speed), greenStyle);
+                    GUI.Box(new Rect(25, 150, 30, 30), string.Format("<color=black><size=15>{0}</size></color>", (int)mainscript.M.player.lastCar.speed), greenStyle);
                 }
             }
         }
