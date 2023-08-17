@@ -14,7 +14,7 @@ namespace SpeedOrBoom
         public bool fastEnough;
         public bool gamemodeActive;
         public bool bombWatchingSpeed = false;
-        public float minSpeed = 70.0f;
+        public float minSpeed = 80.0f;
         public float radius = 150.0F;
 
         private GUIStyle redStyle = null;
@@ -27,7 +27,7 @@ namespace SpeedOrBoom
         public override string ID => "8723";
         public override string Name => "Speed or Boom";
         public override string Author => "Fat Rat";
-        public override string Version => "0.4";
+        public override string Version => "0.5";
 
         public override void OnLoad()
         {
@@ -129,7 +129,6 @@ namespace SpeedOrBoom
                         checkExplode();
                     }
                 }
-
             }
             catch { }
         }
@@ -138,14 +137,15 @@ namespace SpeedOrBoom
             if (gamemodeActive && mainscript.M.player.lastCar.speed < minSpeed - 1 && bombWatchingSpeed)
             {
                 //Go Boom
-                explode();
-                
+                explode(); 
             }
         }
 
         public void explode()
         {
             Vector3 currentPlayerPosition = mainscript.M.player.Tb.position;
+            Rigidbody carBody = mainscript.M.player.Car.gameObject.GetComponent<Rigidbody>();
+            carBody.AddExplosionForce(5f, currentPlayerPosition, radius, 2.0F, ForceMode.VelocityChange);
 
             foreach (partslotscript carPartSlot in mainscript.M.player.Car.gameObject.GetComponentsInChildren<partslotscript>())
             {
@@ -163,13 +163,10 @@ namespace SpeedOrBoom
                             rb.AddExplosionForce(partPower, currentPlayerPosition, radius, 25.0F, ForceMode.Impulse);
                         }
                     }
-
                     activePart.FallOFf();
+                    
                 }
             }
-
-            Rigidbody carBody = mainscript.M.player.lastCar.gameObject.GetComponent<Rigidbody>();
-            carBody.AddExplosionForce(25f, currentPlayerPosition, radius, 5.0F, ForceMode.VelocityChange);
 
             gamemodeActive = false;
             bombWatchingSpeed = false;
