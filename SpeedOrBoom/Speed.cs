@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine.UI;
 using Unity.Injection;
+using System.Linq;
 
 namespace SpeedOrBoom
 {
@@ -13,14 +14,15 @@ namespace SpeedOrBoom
         public bool fastEnough;
         public bool gamemodeActive;
         public bool bombWatchingSpeed = false;
-        public float minSpeed = 80.0f;
+        public float minSpeed = 70.0f;
         public float radius = 150.0F;
-        public float whimpPower = 100.0F;
+
         private GUIStyle redStyle = null;
         private GUIStyle greenStyle = null;
         private GUIStyle blueStyle = null;
-        //To be used in the future so player can toggle the type of bomb
-        public float crazyPower = 30.0F;
+
+        public float carBodyPower = 100.0F;
+        public float partPower = 30.0F;
 
         public override string ID => "8723";
         public override string Name => "Speed or Boom";
@@ -57,7 +59,7 @@ namespace SpeedOrBoom
                 string.Format("<color=red><size=25>Bomb Watching Speed: {0}</size></color>", // format string
                 bombWatchingSpeed)); // format arguments
 #endif
-            if (mainscript.M.player.lastCar != null)
+            if (mainscript.M.player.lastCar != null || mainscript.M.player.Car != null)
             {
                 if (!bombWatchingSpeed && !gamemodeActive)
                 {
@@ -137,32 +139,40 @@ namespace SpeedOrBoom
             {
                 //Go Boom
                 explode();
-                gamemodeActive = false;
-                bombWatchingSpeed = false;
+                
             }
         }
 
         public void explode()
         {
-            // Get the current position of the player
             Vector3 currentPlayerPosition = mainscript.M.player.Tb.position;
 
-            Collider[] colliders = Physics.OverlapSphere(currentPlayerPosition, 150.0f);
-
-            //Find all parts in the collision sphere
-            Rigidbody carBody = mainscript.M.player.lastCar.gameObject.GetComponent<Rigidbody>();
-            carBody.AddExplosionForce(25f, currentPlayerPosition, radius, 3.0F, ForceMode.VelocityChange);
-            foreach (Collider hit in colliders)
+            foreach (partslotscript carPartSlot in mainscript.M.player.Car.gameObject.GetComponentsInChildren<partslotscript>())
             {
-                Rigidbody rb = hit.GetComponent<Rigidbody>();
-                if (rb != null)
-                { 
-                    //Detatch parts from the car and apply the explosion force to them
-                    partscript part = mainscript.M.player.lastCar.gameObject.GetComponentInChildren<partscript>();
-                    part.FallOFf();
-                    rb.AddExplosionForce(crazyPower, currentPlayerPosition, radius, 25.0F, ForceMode.Impulse);
+                if (carPartSlot != null && carPartSlot.part != null)
+                {
+                    partscript activePart = carPartSlot.part;
+
+                    foreach (partslotscript subPartSlot in activePart.tosaveitem.partslotscripts)
+                    {
+                        partscript subPart = subPartSlot.part;
+                        if (subPart != null)
+                        {
+                            Rigidbody rb = carPartSlot.part.GetComponent<Rigidbody>();
+                            subPart.FallOFf();
+                            rb.AddExplosionForce(partPower, currentPlayerPosition, radius, 25.0F, ForceMode.Impulse);
+                        }
+                    }
+
+                    activePart.FallOFf();
                 }
             }
+
+            Rigidbody carBody = mainscript.M.player.lastCar.gameObject.GetComponent<Rigidbody>();
+            carBody.AddExplosionForce(25f, currentPlayerPosition, radius, 5.0F, ForceMode.VelocityChange);
+
+            gamemodeActive = false;
+            bombWatchingSpeed = false;
         }
     }
 }
