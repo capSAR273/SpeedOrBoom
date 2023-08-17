@@ -63,15 +63,15 @@ namespace SpeedOrBoom
             {
                 if (!bombWatchingSpeed && !gamemodeActive)
                 {
-                    GUI.Box(new Rect(25, 150, 25, 25), string.Format("<color=black><size=15>{0}</size></color>", (int)mainscript.M.player.lastCar.speed), redStyle);
+                    GUI.Box(new Rect(25, 150, 35, 25), string.Format("<color=black><size=15>{0}</size></color>", (int)mainscript.M.player.lastCar.speed), redStyle);
                 }
                 else if (bombWatchingSpeed && gamemodeActive)
                 {
-                    GUI.Box(new Rect(25, 150, 25, 25), string.Format("<color=yellow><size=15>{0}</size></color>", (int)mainscript.M.player.lastCar.speed), blueStyle);
+                    GUI.Box(new Rect(25, 150, 35, 25), string.Format("<color=yellow><size=15>{0}</size></color>", (int)mainscript.M.player.lastCar.speed), blueStyle);
                 }
                 else if (gamemodeActive)
                 {
-                    GUI.Box(new Rect(25, 150, 25, 25), string.Format("<color=black><size=15>{0}</size></color>", (int)mainscript.M.player.lastCar.speed), greenStyle);
+                    GUI.Box(new Rect(25, 150, 35, 25), string.Format("<color=black><size=15>{0}</size></color>", (int)mainscript.M.player.lastCar.speed), greenStyle);
                 }
             }
         }
