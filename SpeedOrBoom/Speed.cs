@@ -111,20 +111,20 @@ namespace SpeedOrBoom
         {
             try
             {
-                if (mainscript.M.player.lastCar != null)
+                if (mainscript.M.player.Car != null)
                 {
                     //Pissing resets the bomb activation if you are somewhat standstill in the car
-                    if (mainscript.M.player.pissing && mainscript.M.player.lastCar.speed > 0 && mainscript.M.player.lastCar.speed < 10)
+                    if (mainscript.M.player.pissing && mainscript.M.player.Car.speed > 0 && mainscript.M.player.Car.speed < 10)
                     {
                         gamemodeActive = true;
                     }
                     //Player has met the min speed requirement for the bomb to be enabled and to be going fast enough
-                    if (gamemodeActive && mainscript.M.player.lastCar.speed > minSpeed)
+                    if (gamemodeActive && mainscript.M.player.Car.speed > minSpeed)
                     {
                         bombWatchingSpeed = true;
                     }
                     //Car dipped under the minimum speed, might blow up
-                    else if (mainscript.M.player.lastCar.speed < minSpeed - 1)
+                    else if (mainscript.M.player.Car.speed < minSpeed - 1)
                     {
                         checkExplode();
                     }
