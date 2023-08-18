@@ -27,7 +27,7 @@ namespace SpeedOrBoom
         public override string ID => "8723";
         public override string Name => "Speed or Boom";
         public override string Author => "Fat Rat";
-        public override string Version => "0.5";
+        public override string Version => "1.0";
 
         public override void OnLoad()
         {
@@ -116,7 +116,7 @@ namespace SpeedOrBoom
                     //Pissing resets the bomb activation if you are somewhat standstill in the car
                     if (mainscript.M.player.pissing && mainscript.M.player.Car.speed > 0 && mainscript.M.player.Car.speed < 10)
                     {
-                        gamemodeActive = true;
+                        gamemodeActive = !gamemodeActive;
                     }
                     //Player has met the min speed requirement for the bomb to be enabled and to be going fast enough
                     if (gamemodeActive && mainscript.M.player.Car.speed > minSpeed)
@@ -126,19 +126,15 @@ namespace SpeedOrBoom
                     //Car dipped under the minimum speed, might blow up
                     else if (mainscript.M.player.Car.speed < minSpeed - 1)
                     {
-                        checkExplode();
+                        if (gamemodeActive && mainscript.M.player.lastCar.speed < minSpeed - 1 && bombWatchingSpeed)
+                        {
+                            //Go Boom
+                            explode();
+                        }
                     }
                 }
             }
             catch { }
-        }
-        public void checkExplode()
-        {
-            if (gamemodeActive && mainscript.M.player.lastCar.speed < minSpeed - 1 && bombWatchingSpeed)
-            {
-                //Go Boom
-                explode(); 
-            }
         }
 
         public void explode()
@@ -146,7 +142,7 @@ namespace SpeedOrBoom
             Vector3 currentPlayerPosition = mainscript.M.player.Tb.position;
             Rigidbody carBody = mainscript.M.player.Car.gameObject.GetComponent<Rigidbody>();
             carBody.AddExplosionForce(5f, currentPlayerPosition, 25f, 2.0F, ForceMode.VelocityChange);
-
+            
             foreach (partslotscript carPartSlot in mainscript.M.player.Car.gameObject.GetComponentsInChildren<partslotscript>())
             {
                 if (carPartSlot != null && carPartSlot.part != null)
@@ -167,7 +163,6 @@ namespace SpeedOrBoom
                     
                 }
             }
-
             gamemodeActive = false;
             bombWatchingSpeed = false;
         }
