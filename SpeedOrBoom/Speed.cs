@@ -145,7 +145,7 @@ namespace SpeedOrBoom
         {
             Vector3 currentPlayerPosition = mainscript.M.player.Tb.position;
             Rigidbody carBody = mainscript.M.player.Car.gameObject.GetComponent<Rigidbody>();
-            carBody.AddExplosionForce(5f, currentPlayerPosition, radius, 2.0F, ForceMode.VelocityChange);
+            carBody.AddExplosionForce(5f, currentPlayerPosition, 25f, 2.0F, ForceMode.VelocityChange);
 
             foreach (partslotscript carPartSlot in mainscript.M.player.Car.gameObject.GetComponentsInChildren<partslotscript>())
             {
