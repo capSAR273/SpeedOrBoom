@@ -1,16 +1,13 @@
 ﻿using UnityEngine;
 using TLDLoader;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using UnityEngine.UI;
-using Unity.Injection;
-using System.Linq;
+using DelayModule = SpeedOrBoom.Modules.DelayModule;
 
 namespace SpeedOrBoom
 {
     public class SpeedOrBoom : Mod
     {
+        private readonly DelayModule delayMod = new DelayModule();
+
         public bool fastEnough;
         public bool gamemodeActive;
         public bool bombWatchingSpeed = false;
@@ -116,7 +113,7 @@ namespace SpeedOrBoom
                     //Pissing resets the bomb activation if you are somewhat standstill in the car
                     if (mainscript.M.player.pissing && mainscript.M.player.Car.speed > 0 && mainscript.M.player.Car.speed < 10)
                     {
-                        gamemodeActive = !gamemodeActive;
+                        delayMod.Invoke("modeChange", 1.0f);
                     }
                     //Player has met the min speed requirement for the bomb to be enabled and to be going fast enough
                     if (gamemodeActive && mainscript.M.player.Car.speed > minSpeed)
@@ -136,6 +133,8 @@ namespace SpeedOrBoom
             }
             catch { }
         }
+
+        
 
         public void explode()
         {
